@@ -18,7 +18,9 @@ class Api::V1::GamesController < ApplicationController
   end
 
   def score
-    render json: @game.score
+    if stale?(etag: @game, last_modified: @game.updated_at)
+      render json: @game.score
+    end
   end
 
   private
@@ -28,6 +30,6 @@ class Api::V1::GamesController < ApplicationController
     end
 
     def knocked_pins
-      params.require(:game).permit(:knocked_pins)[:knocked_pins]
+      params.require(:game).permit(:knocked_pins)[:knocked_pins].to_i
     end
 end
