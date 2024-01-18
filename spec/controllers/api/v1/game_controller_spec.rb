@@ -18,6 +18,24 @@ RSpec.describe Api::V1::GamesController, type: :controller do
       put :throw_ball, params: { id: game.id, game: { knocked_pins: 10 } }
       expect(response).to have_http_status(:success)
     end
+
+    context "when wrong game id is provided" do
+      it "renders correct error message" do
+        put :throw_ball, params: { id: 0, game: { knocked_pins: 10 } }
+
+        expect(response).to have_http_status(:not_found)
+        expect(api_response["error"]).to eq("Game not found")
+      end
+    end
+
+    context "when no params were provided" do
+      it "renders correct error message" do
+        put :throw_ball, params: { id: game.id }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(api_response["error"]).to eq("Missing parameter")
+      end
+    end
   end
 
   describe "GET /score" do
