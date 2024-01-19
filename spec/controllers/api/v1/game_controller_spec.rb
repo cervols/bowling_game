@@ -4,9 +4,28 @@ require "rails_helper"
 
 RSpec.describe Api::V1::GamesController, type: :controller do
   describe "POST /create" do
-    it "creates a game" do
-      expect { post :create }.to change { Game.count }.by(1)
-      expect(response).to have_http_status(:created)
+    context "when there were no errors" do
+      it "creates a game" do
+        expect { post :create }.to change { Game.count }.by(1)
+        expect(response).to have_http_status(:created)
+      end
+
+      it "renders id of created game" do
+        post :create
+
+        expect(api_response["id"]).to eq(Game.last.id)
+      end
+    end
+
+    context "when there were some errors" do
+      before do
+        allow_any_instance_of(Game).to receive(:save).and_return(false)
+      end
+
+      it "doesn't create a game" do
+        expect { post :create }.not_to change { Game.count }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
   end
 

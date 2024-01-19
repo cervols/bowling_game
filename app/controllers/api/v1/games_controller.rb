@@ -7,7 +7,7 @@ class Api::V1::GamesController < ApplicationController
   before_action :set_game, only: %i[throw_ball score]
 
   def create
-    @game = Game.create
+    @game = Game.new
 
     if @game.save
       render json: { id: @game.id }, status: :created
