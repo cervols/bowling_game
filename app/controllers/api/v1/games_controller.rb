@@ -3,6 +3,8 @@
 class Api::V1::GamesController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
+  rescue_from Game::GameComplete, with: :game_complete
+  rescue_from Game::InvalidPinNumber, with: :invalid_parameter
 
   before_action :set_game, only: %i[throw_ball score]
 
@@ -42,5 +44,13 @@ class Api::V1::GamesController < ApplicationController
 
     def parameter_missing
       render json: { error: "Missing parameter" }, status: :unprocessable_entity
+    end
+
+    def invalid_parameter
+      render json: { error: "Invalid number of pins" }, status: :unprocessable_entity
+    end
+
+    def game_complete
+      render json: { error: "Game complete" }, status: :unprocessable_entity
     end
 end

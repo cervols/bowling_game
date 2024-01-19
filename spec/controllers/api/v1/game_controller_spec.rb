@@ -55,6 +55,28 @@ RSpec.describe Api::V1::GamesController, type: :controller do
         expect(api_response["error"]).to eq("Missing parameter")
       end
     end
+
+    context "when invalid number of pins were provided" do
+      it "renders correct error message" do
+        put :throw_ball, params: { id: game.id, game: { knocked_pins: 11 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(api_response["error"]).to eq("Invalid number of pins")
+      end
+    end
+
+    context "when game is complete" do
+      before do
+        12.times { put :throw_ball, params: { id: game.id, game: { knocked_pins: 10 } } }
+      end
+
+      it "renders correct error message" do
+        put :throw_ball, params: { id: game.id, game: { knocked_pins: 1 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(api_response["error"]).to eq("Game complete")
+      end
+    end
   end
 
   describe "GET /score" do

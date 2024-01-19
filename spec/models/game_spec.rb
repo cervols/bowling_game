@@ -26,7 +26,7 @@ RSpec.describe Game, type: :model do
       end
 
       it "returns an error" do
-        expect { game.throw_ball(1) }.to raise_error(Game::GameCompleted)
+        expect { game.throw_ball(1) }.to raise_error(Game::GameComplete)
       end
     end
   end
