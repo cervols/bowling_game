@@ -5,12 +5,12 @@ class Game < ApplicationRecord
   MAX_FRAMES_NUMBER = 10
 
   InvalidPinNumber = Class.new(ArgumentError)
-  GameCompleted = Class.new(StandardError)
+  GameComplete = Class.new(StandardError)
 
   def throw_ball(knocked_pins)
     raise InvalidPinNumber, "invalid number of pins" if knocked_pins > MAX_PINS_NUMBER || knocked_pins.negative?
 
-    raise GameCompleted, "game is completed" if completed_frames_count >= MAX_FRAMES_NUMBER
+    raise GameComplete, "game is complete" if completed_frames_count >= MAX_FRAMES_NUMBER
 
     balls.push(knocked_pins)
     save

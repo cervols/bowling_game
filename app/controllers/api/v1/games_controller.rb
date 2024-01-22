@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 class Api::V1::GamesController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  rescue_from ActionController::ParameterMissing, with: :parameter_missing
+  rescue_from Game::GameComplete, with: :game_complete
+  rescue_from Game::InvalidPinNumber, with: :invalid_parameter
+
   before_action :set_game, only: %i[throw_ball score]
 
   def create
-    @game = Game.create
+    @game = Game.new
 
     if @game.save
       render json: { id: @game.id }, status: :created
@@ -18,7 +23,9 @@ class Api::V1::GamesController < ApplicationController
   end
 
   def score
-    render json: @game.score
+    if stale?(etag: @game, last_modified: @game.updated_at)
+      render json: @game.score
+    end
   end
 
   private
@@ -28,6 +35,22 @@ class Api::V1::GamesController < ApplicationController
     end
 
     def knocked_pins
-      params.require(:game).permit(:knocked_pins)[:knocked_pins]
+      params.require(:game).permit(:knocked_pins)[:knocked_pins].to_i
+    end
+
+    def record_not_found
+      render json: { error: "Game not found" }, status: :not_found
+    end
+
+    def parameter_missing
+      render json: { error: "Missing parameter" }, status: :unprocessable_entity
+    end
+
+    def invalid_parameter
+      render json: { error: "Invalid number of pins" }, status: :unprocessable_entity
+    end
+
+    def game_complete
+      render json: { error: "Game complete" }, status: :unprocessable_entity
     end
 end
