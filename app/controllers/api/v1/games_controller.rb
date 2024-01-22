@@ -19,12 +19,13 @@ class Api::V1::GamesController < ApplicationController
   end
 
   def throw_ball
-    @game.throw_ball(knocked_pins)
+    ThrowBall.call(@game, knocked_pins)
   end
 
   def score
     if stale?(etag: @game, last_modified: @game.updated_at)
-      render json: @game.score
+      score = CalculateScore.call(@game)
+      render json: score
     end
   end
 
