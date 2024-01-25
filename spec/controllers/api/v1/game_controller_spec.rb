@@ -33,7 +33,7 @@ RSpec.describe Api::V1::GamesController, type: :controller do
     let(:game) { Game.create }
 
     it "calls throw_ball method for the game" do
-      expect_any_instance_of(Game).to receive(:throw_ball).with(10)
+      expect_any_instance_of(ThrowBall).to receive(:call)
       put :throw_ball, params: { id: game.id, game: { knocked_pins: 10 } }
       expect(response).to have_http_status(:success)
     end
@@ -83,7 +83,7 @@ RSpec.describe Api::V1::GamesController, type: :controller do
     let(:game) { Game.create }
 
     it "calls score method for the game" do
-      expect_any_instance_of(Game).to receive(:score).and_call_original
+      expect_any_instance_of(CalculateScore).to receive(:call).and_call_original
       get :score, params: { id: game.id }
       expect(response).to have_http_status(:success)
     end
@@ -96,7 +96,7 @@ RSpec.describe Api::V1::GamesController, type: :controller do
 
       context "when the game was not changed after the first request" do
         it "calculates points again" do
-          expect_any_instance_of(Game).not_to receive(:score)
+          expect_any_instance_of(CalculateScore).not_to receive(:call)
           request.headers["If-None-Match"] = @etag
 
           get :score, params: { id: game.id }
@@ -105,7 +105,7 @@ RSpec.describe Api::V1::GamesController, type: :controller do
 
       context "when the game was changed after the first request" do
         it "doesn't calculate points again" do
-          expect_any_instance_of(Game).to receive(:score).and_call_original
+          expect_any_instance_of(CalculateScore).to receive(:call).and_call_original
           request.headers["If-None-Match"] = @etag
 
           put :throw_ball, params: { id: game.id, game: { knocked_pins: 1 } }
