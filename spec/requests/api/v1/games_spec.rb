@@ -37,7 +37,7 @@ RSpec.describe "Api::V1::Games", type: :request do
   context "when auth token is valid" do
     let(:user) { User.create(email: "email@example.com", password: "qwerty") }
     let(:api_token) { user.api_tokens.create }
-    let(:headers) { { Authorization: "Token token=#{api_token.token}" } }
+    let(:headers) { { Authorization: "Token token=#{api_token.token}, token_id=#{api_token.id}" } }
 
     describe "POST /create" do
       it "creates a game" do

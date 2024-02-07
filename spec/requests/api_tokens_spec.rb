@@ -14,7 +14,7 @@ RSpec.describe "ApiTokens", type: :request do
     context "when request is authorized" do
       let(:user) { User.create(email: "email@example.com", password: "qwerty") }
       let(:api_token) { user.api_tokens.create }
-      let(:headers) { { Authorization: "Token token=#{api_token.token}" } }
+      let(:headers) { { Authorization: "Token token=#{api_token.token}, token_id=#{api_token.id}" } }
 
       it "returns http success" do
         get "/api-tokens", headers: headers
@@ -79,7 +79,7 @@ RSpec.describe "ApiTokens", type: :request do
     context "when request is authorized" do
       let(:user) { User.create(email: "email@example.com", password: "qwerty") }
       let!(:api_token) { user.api_tokens.create }
-      let(:headers) { { Authorization: "Token token=#{api_token.token}" } }
+      let(:headers) { { Authorization: "Token token=#{api_token.token}, token_id=#{api_token.id}" } }
 
       it "returns http success" do
         delete "/api-tokens", headers: headers
