@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::GamesController < ApplicationController
+class Api::V1::GamesController < Api::V1::ApiController
   before_action :set_game, only: %i[throw_ball score]
 
   def create

@@ -77,7 +77,7 @@ RSpec.describe "ApiTokens", type: :request do
     end
 
     context "when request is authorized" do
-      let!(:user) { User.create(email: "email@example.com", password: "qwerty") }
+      let(:user) { User.create(email: "email@example.com", password: "qwerty") }
       let!(:api_token) { user.api_tokens.create }
       let(:headers) { { Authorization: "Token token=#{api_token.token}" } }
 
