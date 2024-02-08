@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::GamesController < ApplicationController
+class Api::V1::GamesController < Api::V1::ApiController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
   rescue_from Game::GameComplete, with: :game_complete
