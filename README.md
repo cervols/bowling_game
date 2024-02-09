@@ -11,7 +11,9 @@ POST /games
 ```
 
 ```shell
-curl --request POST "https://example.com/api/v1/games" 
+curl --request POST \
+  --url "https://example.com/api/v1/games" \
+  --header "Authorization: Bearer <your_access_token>, token_id=<your_token_id>"
 ```
 
 Example response:
@@ -39,6 +41,7 @@ Parameters:
 curl --request PUT \
   --url "https://example.com/api/v1/games/25/throw_ball" \
   --header "content-type: application/json" \
+  --header "Authorization: Bearer <your_access_token>, token_id=<your_token_id>" \
   --data '{
     "game": {
       "knocked_pins": 10
@@ -49,6 +52,7 @@ curl --request PUT \
 Returns the following status codes:
 
 - `204 No Content`: number of pins knocked down by the ball has been saved.
+- `401 Unauthorized`: user’s personal access token is invalid.
 - `404 Not found`: game with specified id was not found.
 - `422 Unprocessable Entity`: expected parameter is missed OR number of pins is invalid OR game is complete.
 
@@ -65,7 +69,7 @@ Parameters:
 | `id`      | integer | yes      | ID of the game. |
 
 ```shell
-curl "https://example.com/api/v1/games/25/score"
+curl --header "Authorization: Bearer <your_access_token>, token_id=<your_token_id>" "https://example.com/api/v1/games/25/score"
 ```
 
 Example response:
