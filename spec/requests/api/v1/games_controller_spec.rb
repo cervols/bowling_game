@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Api::V1::Games", type: :request do
+RSpec.describe "Api::V1::GamesController", type: :request do
   describe "POST /create" do
     context "when request is unauthorized" do
       it "does not create a game" do
@@ -51,7 +51,7 @@ RSpec.describe "Api::V1::Games", type: :request do
     end
   end
 
-  describe "PUT /throw_ball" do
+  describe "POST /throw_ball" do
     let(:game) { Game.create }
     let(:game_id) { game.id }
     let(:params) { { game: { knocked_pins: 10 } } }
@@ -59,7 +59,7 @@ RSpec.describe "Api::V1::Games", type: :request do
     context "when request is unauthorized" do
       it "does not call throw_ball method for the game" do
         expect_any_instance_of(ThrowBall).not_to receive(:call)
-        put throw_ball_api_v1_game_path(game_id), params: params
+        post throw_ball_api_v1_game_path(game_id), params: params
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -72,7 +72,7 @@ RSpec.describe "Api::V1::Games", type: :request do
 
       it "calls ThrowBall service" do
         expect_any_instance_of(ThrowBall).to receive(:call)
-        put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+        post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
 
         expect(response).to have_http_status(:success)
       end
@@ -81,7 +81,7 @@ RSpec.describe "Api::V1::Games", type: :request do
         let(:game_id) { 0 }
 
         it "renders correct error message" do
-          put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+          post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
 
           expect(response).to have_http_status(:not_found)
           expect(api_response["error"]).to eq("Game not found")
@@ -92,7 +92,7 @@ RSpec.describe "Api::V1::Games", type: :request do
         let(:params) { {} }
 
         it "renders correct error message" do
-          put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+          post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(api_response["error"]).to eq("Missing parameter")
@@ -103,7 +103,7 @@ RSpec.describe "Api::V1::Games", type: :request do
         let(:params) { { game: { knocked_pins: 11 } } }
 
         it "renders correct error message" do
-          put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+          post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(api_response["error"]).to eq("Invalid number of pins")
@@ -113,12 +113,12 @@ RSpec.describe "Api::V1::Games", type: :request do
       context "when game is complete" do
         before do
           12.times do
-            put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+            post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
           end
         end
 
         it "renders correct error message" do
-          put throw_ball_api_v1_game_path(game_id), params: params, headers: headers
+          post throw_ball_api_v1_game_path(game_id), params: params, headers: headers
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(api_response["error"]).to eq("Game complete")
@@ -172,7 +172,7 @@ RSpec.describe "Api::V1::Games", type: :request do
             expect_any_instance_of(CalculateScore).to receive(:call).and_call_original
             request.headers["If-None-Match"] = @etag
 
-            put throw_ball_api_v1_game_path(game_id), params: { game: { knocked_pins: 1 } }, headers: headers
+            post throw_ball_api_v1_game_path(game_id), params: { game: { knocked_pins: 1 } }, headers: headers
             get score_api_v1_game_path(game_id), headers: headers
           end
         end

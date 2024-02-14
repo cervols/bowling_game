@@ -27,7 +27,7 @@ Example response:
 ### _Input the number of pins knocked down by the last ball_
 
 ```plaintext
-PUT /games/:id/throw_ball
+POST /games/:id/throw_ball
 ```
 
 Parameters:
@@ -38,7 +38,7 @@ Parameters:
 | `game`    | object  | yes      | JSON object with the `knocked_pins` key. Value for this key has to be an integer number that is `>=` 0 and `<=` 10. |
 
 ```shell
-curl --request PUT \
+curl --request POST \
   --url "https://example.com/api/v1/games/25/throw_ball" \
   --header "content-type: application/json" \
   --header "Authorization: Bearer <your_access_token>, token_id=<your_token_id>" \

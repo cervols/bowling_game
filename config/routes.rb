@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :games, only: [:create] do
         member do
-          put :throw_ball
+          post :throw_ball
           get :score
         end
       end
