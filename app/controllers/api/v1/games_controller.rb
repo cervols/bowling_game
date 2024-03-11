@@ -9,12 +9,12 @@ class Api::V1::GamesController < Api::V1::ApiController
   before_action :set_game, only: %i[throw_ball score]
 
   def create
-    @game = Game.new
+    game = Game.new
 
-    if @game.save
-      render json: { id: @game.id }, status: :created
+    if game.save
+      render json: { id: game.id }, status: :created
     else
-      render json: @game.errors, status: :unprocessable_entity
+      render json: game.errors, status: :unprocessable_entity
     end
   end
 
